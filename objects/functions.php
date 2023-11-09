@@ -7341,10 +7341,9 @@ function getPagination($total, $page = 0, $link = "", $maxVisible = 10, $infinit
     if (empty($link)) {
         $link = getSelfURI();
         if (preg_match("/(current=[0-9]+)/i", $link, $match)) {
-            $link = str_replace($match[1], "current={page}", $link);
+            $link = str_replace($match[1], "current=_pageNum_", $link);
         } else {
-            //$link = addQueryStringParameter($link, 'current', '{page}');
-            $link .= (parse_url($link, PHP_URL_QUERY) ? '&' : '?') . 'current={page}';
+            $link .= (parse_url($link, PHP_URL_QUERY) ? '&' : '?') . 'current=_pageNum_';
         }
     }
     if($isInfiniteScroll){
@@ -7353,15 +7352,14 @@ function getPagination($total, $page = 0, $link = "", $maxVisible = 10, $infinit
     if(is_string($showOnly)){
         $link = addQueryStringParameter($link, 'showOnly',$showOnly);
     }
-
     $class = '';
     if (!empty($infinityScrollGetFromSelector) && !empty($infinityScrollAppendIntoSelector)) {
         $class = "infiniteScrollPagination{$uid} hidden";
     }
 
     if ($isInfiniteScroll && $page > 1) {
-        if (preg_match("/\{page\}/", $link, $match)) {
-            $pageForwardLink = str_replace("{page}", $page + 1, $link);
+        if (preg_match("/_pageNum_/", $link, $match)) {
+            $pageForwardLink = str_replace("_pageNum_", $page + 1, $link);
         } else {
             $pageForwardLink = addQueryStringParameter($link, 'current', $page + 1);
         }
@@ -7391,9 +7389,9 @@ function getPagination($total, $page = 0, $link = "", $maxVisible = 10, $infinit
         if ($page > 1) {
             $pageLinkNum = 1;
             $pageBackLinkNum = $page - 1;
-            if (preg_match("/\{page\}/", $link, $match)) {
-                $pageLink = str_replace("{page}", $pageLinkNum, $link);
-                $pageBackLink = str_replace("{page}", $pageBackLinkNum, $link);
+            if (preg_match("/_pageNum_/", $link, $match)) {
+                $pageLink = str_replace("_pageNum_", $pageLinkNum, $link);
+                $pageBackLink = str_replace("_pageNum_", $pageBackLinkNum, $link);
             } else {
                 $pageLink = addQueryStringParameter($link, 'current', $pageLinkNum);
                 $pageBackLink = addQueryStringParameter($link, 'current', $pageBackLinkNum);
@@ -7407,8 +7405,8 @@ function getPagination($total, $page = 0, $link = "", $maxVisible = 10, $infinit
             if ($i == $page) {
                 $pag .= PHP_EOL . ' <li class="page-item active"><span class="page-link"> ' . $i . ' <span class="sr-only">(current)</span></span></li>';
             } else {
-                if (preg_match("/\{page\}/", $link, $match)) {
-                    $pageLink = str_replace("{page}", $i, $link);
+                if (preg_match("/_pageNum_/", $link, $match)) {
+                    $pageLink = str_replace("_pageNum_", $i, $link);
                 } else {
                     $pageLink = addQueryStringParameter($link, 'current', $i);
                 }
@@ -7419,9 +7417,9 @@ function getPagination($total, $page = 0, $link = "", $maxVisible = 10, $infinit
     if ($page < $total) {
         $pageLinkNum = $total;
         $pageForwardLinkNum = $page + 1;
-        if (preg_match("/\{page\}/", $link, $match)) {
-            $pageLink = str_replace("{page}", $pageLinkNum, $link);
-            $pageForwardLink = str_replace("{page}", $pageForwardLinkNum, $link);
+        if (preg_match("/_pageNum_/", $link, $match)) {
+            $pageLink = str_replace("_pageNum_", $pageLinkNum, $link);
+            $pageForwardLink = str_replace("_pageNum_", $pageForwardLinkNum, $link);
         } else {
             $pageLink = addQueryStringParameter($link, 'current', $pageLinkNum);
             $pageForwardLink = addQueryStringParameter($link, 'current', $pageForwardLinkNum);
@@ -7431,6 +7429,7 @@ function getPagination($total, $page = 0, $link = "", $maxVisible = 10, $infinit
             $pag .= PHP_EOL . '<li class="page-item"><a pageNum="' . $pageLinkNum . '" class="page-link  pageLink3" href="' . $pageLink . '" tabindex="-1" onclick="modal.showPleaseWait();"><i class="fas fa-angle-double-right"></i></a></li>';
         }
     }
+    //var_dump($page, $link, $pageForwardLink, $pag);exit;
     $pag .= PHP_EOL . '</ul></nav> ';
 
     if ($isInfiniteScroll) {

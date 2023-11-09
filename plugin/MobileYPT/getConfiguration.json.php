@@ -74,9 +74,13 @@ foreach ($unset as $value) {
     unset($objMM->YPTSocket->$value);
 }
 
-$objMM->language = $config->getLanguage();
-@include_once "{$global['systemRootPath']}locale/{$objMM->language}.php";
+$objMM->enabledLangs = getEnabledLangs();
+$objMM->defaultLang = getLanguage();
+
+@include_once "{$global['systemRootPath']}locale/{$objMM->defaultLang}.php";
 $objMM->translations = $t;
+
+
 if (!empty($objMM->YPTSocket)) {
     $refl = new ReflectionClass('SocketMessageType');
     $objMM->webSocketTypes = json_encode($refl->getConstants());

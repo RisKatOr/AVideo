@@ -19,16 +19,20 @@ function createGallery($title, $sort, $rowCount, $getName, $mostWord, $lessWord,
     global $contentSearchFound;
     $title = __($title);
     $getName = str_replace(array("'", '"', "&quot;", "&#039;"), array('', '', '', ''), xss_esc($getName));
-    /*
-    if (!empty($_GET['showOnly']) && !isInfiniteScroll()) {
-        $rowCount = 24;
+    
+    global $global, $url;
+    $url .= '_pageNum_/';
+    foreach ($_REQUEST as $key => $value) {
+        $url = addQueryStringParameter($url, $key, $value);
     }
-    */
-    if(!empty($_REQUEST['showOnly'])){
+    if ((!empty($_GET['showOnly']) && !isInfiniteScroll())) {
         $rowCount = 24;
+        $url = addQueryStringParameter($url, 'infiniteScrollRowCount', $rowCount);
+    }
+    if(!empty($_GET['infiniteScrollRowCount'])){
+        $rowCount = intval($_GET['infiniteScrollRowCount']);
     }
     
-    global $global, $args, $url;
     $paggingId = uniqid();
     $uid = "gallery" . uniqid();
 ?>
@@ -105,7 +109,7 @@ function createGallery($title, $sort, $rowCount, $getName, $mostWord, $lessWord,
                     $infinityScrollAppendIntoSelector = ".gallerySectionContent{$getName}";
                 }
 
-                echo getPagination($totalPages, $page, "{$url}{page}{$args}", 10, $infinityScrollGetFromSelector, $infinityScrollAppendIntoSelector, false, $getName);
+                echo getPagination($totalPages, $page, $url, 10, $infinityScrollGetFromSelector, $infinityScrollAppendIntoSelector, false, $getName);
                 ?>
             </div>
         <?php
