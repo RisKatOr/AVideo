@@ -116,7 +116,7 @@ services:
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
       MYSQL_INITDB_SKIP_TZINFO: 1
-      MYSQL_DATABASE: "${DB_MYSQL_NAME}"
+      MYSQL_DATABASE: "${DB_MYSQL_NAME}:${DB_MYSQL_NAME}_encoder"
       MYSQL_USER: "${DB_MYSQL_USER}"
       MYSQL_PASSWORD: "${DB_MYSQL_PASSWORD}"
     volumes:
@@ -130,25 +130,25 @@ services:
     networks:
       - app_net
 
-  database_encoder:
-    image: "mariadb:latest"
-    restart: "unless-stopped"
-    environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-      MYSQL_INITDB_SKIP_TZINFO: 1
-      MYSQL_DATABASE: "${DB_MYSQL_NAME}_encoder"
-      MYSQL_USER: "${DB_MYSQL_USER}"
-      MYSQL_PASSWORD: "${DB_MYSQL_PASSWORD}"
-    volumes:
-      - ./.compose/db_encoder:/var/lib/mysql
-    healthcheck:
-      #test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pexample"]
-      test: "mariadb-admin ping -h localhost -u $MYSQL_USER -p$MYSQL_PASSWORD"
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - app_net
+  #database_encoder:
+  #  image: "mariadb:latest"
+  #  restart: "unless-stopped"
+  #  environment:
+  #    MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+  #    MYSQL_INITDB_SKIP_TZINFO: 1
+  #    MYSQL_DATABASE: "${DB_MYSQL_NAME}_encoder"
+  #    MYSQL_USER: "${DB_MYSQL_USER}"
+  #    MYSQL_PASSWORD: "${DB_MYSQL_PASSWORD}"
+  #  volumes:
+  #    - ./.compose/db_encoder:/var/lib/mysql
+  #  healthcheck:
+  #    #test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pexample"]
+  #    test: "mariadb-admin ping -h localhost -u $MYSQL_USER -p$MYSQL_PASSWORD"
+  #    interval: 30s
+  #    timeout: 10s
+  #    retries: 3
+  #  networks:
+  #    - app_net
 
   #http://localhost:8081
   phpmyadmin:
@@ -168,21 +168,21 @@ services:
       - app_net
 
   #http://localhost:8082
-  phpmyadmin_encoder:
-    image: "phpmyadmin/phpmyadmin"
-    restart: "unless-stopped"
-    environment:
-      PMA_HOST: "${DB_MYSQL_HOST}_encoder"
-      PMA_PORT: ${DB_MYSQL_PORT}
-      PMA_CONTROLUSER: "${DB_MYSQL_USER}"
-      PMA_CONTROLPASS: "${DB_MYSQL_PASSWORD}"
-      HIDE_PHP_VERSION: "true"
-    ports:
-      - "${PHPMYADMIN_ENCODER_PORT:-8082}:80"
-    depends_on:
-      - database_encoder
-    networks:
-      - app_net
+  #phpmyadmin_encoder:
+  #  image: "phpmyadmin/phpmyadmin"
+  #  restart: "unless-stopped"
+  #  environment:
+  #    PMA_HOST: "${DB_MYSQL_HOST}_encoder"
+  #    PMA_PORT: ${DB_MYSQL_PORT}
+  #    PMA_CONTROLUSER: "${DB_MYSQL_USER}"
+  #    PMA_CONTROLPASS: "${DB_MYSQL_PASSWORD}"
+  #    HIDE_PHP_VERSION: "true"
+  #  ports:
+  #    - "${PHPMYADMIN_ENCODER_PORT:-8082}:80"
+  #  depends_on:
+  #    - database_encoder
+  #  networks:
+  #    - app_net
 
 networks:
   app_net:
