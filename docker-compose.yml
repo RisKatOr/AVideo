@@ -61,11 +61,11 @@ services:
       - "./.compose/videos:/var/www/html/AVideo/videos"
       - "./.compose/encoder:/var/www/html/AVideo/Encoder"
       - "./.compose/letsencrypt:/etc/letsencrypt/"
-    depends_on:
-      database:
-        condition: service_healthy
-      #database_encoder:
-      #  condition: service_healthy
+    #depends_on:
+    #  database:
+    #    condition: service_healthy
+    #  database_encoder:
+    #    condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl --silent --fail http://localhost || exit 1"]
       interval: 30s
@@ -100,8 +100,8 @@ services:
     depends_on:
       avideo:
         condition: service_healthy
-      database:
-        condition: service_healthy
+    #  database:
+    #    condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl --silent --fail http://localhost:8080 || exit 1"]
       interval: 30s
@@ -110,26 +110,26 @@ services:
     networks:
       - app_net
 
-  database:
-    image: "mariadb:latest"
-    restart: "unless-stopped"
-    environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-      MYSQL_INITDB_SKIP_TZINFO: 1
-      MYSQL_DATABASE: "${DB_MYSQL_NAME}:${DB_MYSQL_NAME}_encoder"
-      #MYSQL_DATABASE: "${DB_MYSQL_NAME}":"${DB_MYSQL_NAME}_encoder"
-      MYSQL_USER: "${DB_MYSQL_USER}"
-      MYSQL_PASSWORD: "${DB_MYSQL_PASSWORD}"
-    volumes:
-      - ./.compose/db:/var/lib/mysql
-    healthcheck:
-      #test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pexample"]
-      test: "mariadb-admin ping -h localhost -u $MYSQL_USER -p$MYSQL_PASSWORD"
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - app_net
+  #database:
+  #  image: "mariadb:latest"
+  #  restart: "unless-stopped"
+  #  environment:
+  #    MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+  #    MYSQL_INITDB_SKIP_TZINFO: 1
+  #    MYSQL_DATABASE: "${DB_MYSQL_NAME}:${DB_MYSQL_NAME}_encoder"
+  #    #MYSQL_DATABASE: "${DB_MYSQL_NAME}":"${DB_MYSQL_NAME}_encoder"
+  #    MYSQL_USER: "${DB_MYSQL_USER}"
+  #    MYSQL_PASSWORD: "${DB_MYSQL_PASSWORD}"
+  #  volumes:
+  #    - ./.compose/db:/var/lib/mysql
+  #  healthcheck:
+  #    #test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pexample"]
+  #    test: "mariadb-admin ping -h localhost -u $MYSQL_USER -p$MYSQL_PASSWORD"
+  #    interval: 30s
+  #    timeout: 10s
+  #    retries: 3
+  #  networks:
+  #    - app_net
 
   #database_encoder:
   #  image: "mariadb:latest"
@@ -152,21 +152,21 @@ services:
   #    - app_net
 
   #http://localhost:8081
-  phpmyadmin:
-    image: "phpmyadmin/phpmyadmin"
-    restart: "unless-stopped"
-    environment:
-      PMA_HOST: "${DB_MYSQL_HOST}"
-      PMA_PORT: ${DB_MYSQL_PORT}
-      PMA_CONTROLUSER: "${DB_MYSQL_USER}"
-      PMA_CONTROLPASS: "${DB_MYSQL_PASSWORD}"
-      HIDE_PHP_VERSION: "true"
-    ports:
-      - "${PHPMYADMIN_PORT:-8081}:80"
-    depends_on:
-      - database
-    networks:
-      - app_net
+  #phpmyadmin:
+  #  image: "phpmyadmin/phpmyadmin"
+  #  restart: "unless-stopped"
+  #  environment:
+  #    PMA_HOST: "${DB_MYSQL_HOST}"
+  #    PMA_PORT: ${DB_MYSQL_PORT}
+  #    PMA_CONTROLUSER: "${DB_MYSQL_USER}"
+  #    PMA_CONTROLPASS: "${DB_MYSQL_PASSWORD}"
+  #    HIDE_PHP_VERSION: "true"
+  #  ports:
+  #    - "${PHPMYADMIN_PORT:-8081}:80"
+  #  depends_on:
+  #    - database
+  #  networks:
+  #    - app_net
 
   #http://localhost:8082
   #phpmyadmin_encoder:
